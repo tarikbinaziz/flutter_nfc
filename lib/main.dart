@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:nfc_manager/ndef_record.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager_ndef/nfc_manager_ndef.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
 
@@ -88,21 +87,23 @@ void startReading() {
 
     onDiscovered: (NfcTag tag) async {
       var ndef = Ndef.from(tag);
+      print("NFC Tag discovered: $tag");
       if (ndef == null) {
         NfcManager.instance.stopSession();
         return;
       }
 
       NdefMessage? message = await ndef.read();
+      print("NFC Message read: $message");
       if (message!.records.isNotEmpty) {
         NdefRecord record = message.records.first;
         String payload = utf8.decode(record.payload);
         payload = payload.substring(1); // Remove identifier byte
 
-        Uri? url = Uri.tryParse(payload);
-        if (url != null && await canLaunchUrl(url)) {
-          await launchUrl(url); // Opens URL in browser
-        }
+        // Uri? url = Uri.tryParse(payload);
+        // if (url != null && await canLaunchUrl(url)) {
+        //   await launchUrl(url); // Opens URL in browser
+        // }
       }
 
       NfcManager.instance.stopSession();
