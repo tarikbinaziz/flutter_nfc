@@ -123,3 +123,75 @@ NFC technology offers a convenient and secure way to transfer data and enable co
 
 By following the steps in this guide, you can successfully implement NFC reading and writing in your Flutter app. Now, try adding advanced features like encrypted storage, background scanning, or multi-tag support to make your app even more powerful!
 
+
+
+1️⃣ iOS Deployment Target
+
+Make sure your Xcode project has iOS Deployment Target ≥ 13.0
+
+iOS 13+ is required for NFC tag reading.
+
+2️⃣ Add Entitlements
+
+You need to create an entitlements file (e.g., Runner.entitlements) in Xcode and enable Near Field Communication Tag Reader Session Formats.
+
+This allows your app to access Core NFC sessions.
+
+3️⃣ Info.plist modifications
+
+You need to add these keys:
+
+NFCReaderUsageDescription – mandatory for permission prompt:
+
+<key>NFCReaderUsageDescription</key>
+<string>We need NFC access to scan cards and tags.</string>
+
+
+ISO7816 select identifiers – if you read ISO7816 (smart card) tags:
+
+<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+<array>
+    <string>F222222222</string> <!-- your card identifier -->
+</array>
+
+
+FeliCa system codes – if you read FeliCa cards (Japanese transit, etc.):
+
+<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
+<array>
+    <string>FFFF</string> <!-- your system code -->
+</array>
+
+
+Note: You only need this if you use NfcPollingOption.iso18092 in startSession. Otherwise, iOS will throw an error.
+
+
+1️⃣ Entitlements file ki?
+
+iOS apps e entitlements ekta special permissions file, ja system ke bole kon feature app use korte parbe.
+
+NFC, Apple Pay, Push Notification, iCloud, etc., sob ei file diye enable korte hoy.
+
+Flutter project e normally ei file Runner.entitlements name e thake Xcode project er modhye:
+
+ios/Runner/Runner.entitlements
+
+2️⃣ NFC Enable kora
+
+Xcode e Runner.xcworkspace open koro.
+
+Left panel e Runner > Signing & Capabilities tab select koro.
+
++ Capability button click koro.
+
+List theke Near Field Communication Tag Reading choose koro.
+
+✅ Ekhon Xcode automatically Runner.entitlements update kore dibe:
+
+<key>com.apple.developer.nfc.readersession.formats</key>
+<array>
+    <string>NDEF</string>
+</array>
+
+
+Ei step e NFC permission app er system level e enable hoy.
